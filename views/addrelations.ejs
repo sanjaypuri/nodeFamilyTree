@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Family Tree</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="bg-dark">
+  <%- include('navbar') %>
+    <div class="container w-50">
+      <h1 class="text-light text-center pt-2">Relations for <%= data.person1 %>
+      </h1>
+      <table class="table table-dark">
+        <tr>
+          <td>Father</td>
+          <% if(data.relations.father.id===0) { %>
+            <td><a href="/addfather/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Father</button></a>
+            </td>
+          <% } else { %>
+            <td><%= data.relations.father.name %></td>
+          <% } %>
+        </tr>
+        <tr>
+          <td>Mother</td>
+          <% if(data.relations.mother.id===0) { %>
+            <td><a href="/addmother/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Mother</button></a>
+            </td>
+          <% } else { %>
+            <td><%= data.relations.mother.name %></td>
+          <% } %>
+        </tr>
+        <tr>
+          <% if(data.gender === 'male'){ %>
+            <td>Wife</td>
+            <% if(data.relations.wife.id===0) { %>
+              <td><a href="/addwife/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Wife</button></a>
+              </td>
+            <% } else { %>
+              <td><%= data.relations.wife.name %></td>
+            <% } %>
+            <% } else { %>
+              <td>Husband</td>
+              <% if(data.relations.husband.id===0) { %>
+                <td><a href="/addhusband/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Husband</button></a>
+                </td>
+              <% } else { %>
+                <td><%= data.relations.husband.name %></td>
+              <% } %>
+          <% } %>
+        </tr>
+        <tr>
+          <% if(data.relations.sons.length > 1) { %>
+            <td>Sons</td>
+          <% } else { %>
+            <td>Son</td>
+          <% } %>
+          <td>
+            <table class="table table-dark">
+              <% data.relations.sons.map((son)=>{ %>
+                <tr>
+                    <td><%= son.name %></td>
+                </tr>
+              <% }) %>
+              <tr>
+                <td>
+                  <a href="/addson/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Son</button></a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <% if(data.relations.daughters.length > 1) { %>
+            <td>Daughters</td>
+          <% } else { %>
+            <td>Daughter</td>
+          <% } %>
+          <td>
+            <table class="table table-dark">
+              <% data.relations.daughters.map((daughter)=>{ %>
+                <tr>
+                    <td><%= daughter.name %></td>
+                </tr>
+              <% }) %>
+              <tr>
+                <td>
+                  <a href="/adddaughter/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Daughter</button></a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <% if(data.relations.brothers.length > 1) { %>
+            <td>Brothers</td>
+          <% } else { %>
+            <td>Brother</td>
+          <% } %>
+          <td>
+            <table class="table table-dark">
+              <% data.relations.brothers.map((brother)=>{ %>
+                <tr>
+                    <td><%= brother.name %></td>
+                </tr>
+              <% }) %>
+              <tr>
+                <td>
+                  <a href="/addbrother/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Brother</button></a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <% if(data.relations.sisters.length > 1) { %>
+            <td>Sisters</td>
+          <% } else { %>
+            <td>Sister</td>
+          <% } %>
+          <td>
+            <table class="table table-dark">
+              <% data.relations.sisters.map((sister)=>{ %>
+                <tr>
+                    <td><%= sister.name %></td>
+                </tr>
+              <% }) %>
+              <tr>
+                <td>
+                  <a href="/addsister/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Sister</button></a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+</body>
+
+</html>
