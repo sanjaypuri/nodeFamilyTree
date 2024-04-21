@@ -18,123 +18,184 @@
         <tr>
           <td>Father</td>
           <% if(data.relations.father.id===0) { %>
-            <td><a href="/addfather/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Father</button></a>
+            <td colspan="2">
+              <a href="/addfather/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                  Father</button></a>
             </td>
-          <% } else { %>
-            <td><%= data.relations.father.name %></td>
-          <% } %>
+            <% } else { %>
+              <td>
+                <%= data.relations.father.name %>
+              </td>
+              <td>
+                <a href="/removefather/<%= data.person1id %>/<%= data.gender %>/<%= data.relations.father.id%>">
+                  <button class="btn btn-sm btn-secondary">Remove</button>
+                </a>
+              </td>
+              <% } %>
         </tr>
         <tr>
           <td>Mother</td>
           <% if(data.relations.mother.id===0) { %>
-            <td><a href="/addmother/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Mother</button></a>
+            <td>
+              <a href="/addmother/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                  Mother</button></a>
             </td>
-          <% } else { %>
-            <td><%= data.relations.mother.name %></td>
-          <% } %>
+            <% } else { %>
+              <td>
+                <%= data.relations.mother.name %>
+              </td>
+              <td>
+                <a href="/removemother/<%= data.person1id %>/<%= data.gender %>/<%= data.relations.mother.id%>"><button
+                    class="btn btn-sm btn-secondary">Remove</button></a>
+              </td>
+              <% } %>
         </tr>
         <tr>
-          <% if(data.gender === 'male'){ %>
+          <% if(data.gender==='male' ){ %>
             <td>Wife</td>
             <% if(data.relations.wife.id===0) { %>
-              <td><a href="/addwife/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Wife</button></a>
+              <td><a href="/addwife/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                    Wife</button></a>
               </td>
-            <% } else { %>
-              <td><%= data.relations.wife.name %></td>
-            <% } %>
-            <% } else { %>
-              <td>Husband</td>
-              <% if(data.relations.husband.id===0) { %>
-                <td><a href="/addhusband/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Husband</button></a>
-                </td>
               <% } else { %>
-                <td><%= data.relations.husband.name %></td>
-              <% } %>
-          <% } %>
+                <td>
+                  <%= data.relations.wife.name %>
+                </td>
+                <td>
+                  <a href="/removewife/<%= data.person1id %>/<%= data.gender %>/<%= data.relations.wife.id%>"><button
+                      class="btn btn-sm btn-secondary">Remove</button></a>
+                </td>
+                <% } %>
+                  <% } else { %>
+                    <td>Husband</td>
+                    <% if(data.relations.husband.id===0) { %>
+                      <td><a href="/addhusband/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                            Husband</button></a>
+                      </td>
+                      <% } else { %>
+                        <td>
+                          <%= data.relations.husband.name %>
+                        </td>
+                        <td>
+                          <a href="/removehusband/<%= data.person1id %>/<%= data.gender %>/<%= data.relations.husband.id%>"><button
+                              class="btn btn-sm btn-secondary">Remove</button></a>
+                        </td>
+                        <% } %>
+                          <% } %>
         </tr>
         <tr>
-          <% if(data.relations.sons.length > 1) { %>
+          <% if(data.relations.sons.length> 1) { %>
             <td>Sons</td>
-          <% } else { %>
-            <td>Son</td>
-          <% } %>
-          <td>
-            <table class="table table-dark">
-              <% data.relations.sons.map((son)=>{ %>
-                <tr>
-                    <td><%= son.name %></td>
-                </tr>
-              <% }) %>
-              <tr>
+            <% } else { %>
+              <td>Son</td>
+              <% } %>
                 <td>
-                  <a href="/addson/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Son</button></a>
+                  <table class="table table-dark">
+                    <% data.relations.sons.map((son)=>{ %>
+                      <tr>
+                        <td>
+                          <%= son.name %>
+                        </td>
+                        <td>
+                          <a href="/removeson/<%= data.person1id %>/<%= data.gender %>/<%= son.id%>"><button
+                              class="btn btn-sm btn-secondary">Remove</button></a>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <tr>
+                          <td>
+                            <a href="/addson/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                                Son</button></a>
+                          </td>
+                        </tr>
+                  </table>
                 </td>
-              </tr>
-            </table>
-          </td>
         </tr>
         <tr>
-          <% if(data.relations.daughters.length > 1) { %>
+          <% if(data.relations.daughters.length> 1) { %>
             <td>Daughters</td>
-          <% } else { %>
-            <td>Daughter</td>
-          <% } %>
-          <td>
-            <table class="table table-dark">
-              <% data.relations.daughters.map((daughter)=>{ %>
-                <tr>
-                    <td><%= daughter.name %></td>
-                </tr>
-              <% }) %>
-              <tr>
+            <% } else { %>
+              <td>Daughter</td>
+              <% } %>
                 <td>
-                  <a href="/adddaughter/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Daughter</button></a>
+                  <table class="table table-dark">
+                    <% data.relations.daughters.map((daughter)=>{ %>
+                      <tr>
+                        <td>
+                          <%= daughter.name %>
+                        </td>
+                        <td>
+                          <a href="/removedaughter/<%= data.person1id %>/<%= data.gender %>/<%= daughter.id%>"><button
+                              class="btn btn-sm btn-secondary">Remove</button></a>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <tr>
+                          <td>
+                            <a href="/adddaughter/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                                Daughter</button></a>
+                          </td>
+                        </tr>
+                  </table>
                 </td>
-              </tr>
-            </table>
-          </td>
         </tr>
         <tr>
-          <% if(data.relations.brothers.length > 1) { %>
+          <% if(data.relations.brothers.length> 1) { %>
             <td>Brothers</td>
-          <% } else { %>
-            <td>Brother</td>
-          <% } %>
-          <td>
-            <table class="table table-dark">
-              <% data.relations.brothers.map((brother)=>{ %>
-                <tr>
-                    <td><%= brother.name %></td>
-                </tr>
-              <% }) %>
-              <tr>
+            <% } else { %>
+              <td>Brother</td>
+              <% } %>
                 <td>
-                  <a href="/addbrother/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Brother</button></a>
+                  <table class="table table-dark">
+                    <% data.relations.brothers.map((brother)=>{ %>
+                      <tr>
+                        <td>
+                          <%= brother.name %>
+                        </td>
+                        <td>
+                          <a href="/removebrother/<%= data.person1id %>/<%= data.gender %>/<%= brother.id%>">
+                            <button class="btn btn-sm btn-secondary">Remove</button>
+                          </a>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <tr>
+                          <td>
+                            <a href="/addbrother/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                                Brother</button></a>
+                          </td>
+                        </tr>
+                  </table>
                 </td>
-              </tr>
-            </table>
-          </td>
         </tr>
         <tr>
-          <% if(data.relations.sisters.length > 1) { %>
+          <% if(data.relations.sisters.length> 1) { %>
             <td>Sisters</td>
-          <% } else { %>
-            <td>Sister</td>
-          <% } %>
-          <td>
-            <table class="table table-dark">
-              <% data.relations.sisters.map((sister)=>{ %>
-                <tr>
-                    <td><%= sister.name %></td>
-                </tr>
-              <% }) %>
-              <tr>
+            <% } else { %>
+              <td>Sister</td>
+              <% } %>
                 <td>
-                  <a href="/addsister/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add Sister</button></a>
+                  <table class="table table-dark">
+                    <% data.relations.sisters.map((sister)=>{ %>
+                      <tr>
+                        <td>
+                          <%= sister.name %>
+                          <td>
+                            <a href="/removesister/<%= data.person1id %>/<%= data.gender %>/<%= sister.id%>">
+                              <button class="btn btn-sm btn-secondary">Remove</button>
+                            </a>
+                          </td>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <tr>
+                          <td>
+                            <a href="/addsister/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
+                                Sister</button></a>
+                          </td>
+                        </tr>
+                  </table>
                 </td>
-              </tr>
-            </table>
-          </td>
         </tr>
       </table>
     </div>

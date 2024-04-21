@@ -125,14 +125,14 @@ app.get('/listrelations', (req, res) => {
 app.get('/addrelations/:id', (req, res) => {
   const id = req.params.id;
   let relations = {
-    father:{id:0, name:''},
-    mother:{id:0, name:''},
-    husband:{id:0, name:''},
-    wife:{id:0, name:''},
-    sons:[],
-    daughters:[],
-    brothers:[],
-    sisters:[],
+    father: { id: 0, name: '' },
+    mother: { id: 0, name: '' },
+    husband: { id: 0, name: '' },
+    wife: { id: 0, name: '' },
+    sons: [],
+    daughters: [],
+    brothers: [],
+    sisters: [],
   };
   const sql = `SELECT rs.id, 
   rs.person1id,
@@ -145,20 +145,19 @@ app.get('/addrelations/:id', (req, res) => {
   LEFT JOIN persons p1 ON p1.id = rs.person1id
   LEFT JOIN persons p2 ON p2.id = rs.person2id
   WHERE rs.person1id = ?`;
-  db.all(sql, id, (err, rows)=>{
-    if(err){
-      console.log("Hello");
+  db.all(sql, id, (err, rows) => {
+    if (err) {
       console.log(`Error reading from relationships table: ${err.message}`);
       const error = {
         type: "Error reading relationship table",
         details: err.message
       }
       res.render('errorpage', { error });
-    } else{
-      if(rows.length<1){
+    } else {
+      if (rows.length < 1) {
         const sql2 = `SELECT id, first||' '||last name, gender FROM persons WHERE id = ?`;
-        db.all(sql2, id, (err, recs)=>{
-          if(err){
+        db.all(sql2, id, (err, recs) => {
+          if (err) {
             console.log(`Error reading from persons table: ${err.message}`);
             const error = {
               type: "Error reading persons table",
@@ -167,16 +166,16 @@ app.get('/addrelations/:id', (req, res) => {
             res.render('errorpage', { error });
           }
           const data = {
-            person1id:recs[0].id,
+            person1id: recs[0].id,
             person1: recs[0].name,
             gender: recs[0].gender,
             relations: relations
           };
           res.render('addrelations', { data });
         });
-      } else{
-        for(i=0; i<rows.length; i++){
-          switch (rows[i].relationid){
+      } else {
+        for (i = 0; i < rows.length; i++) {
+          switch (rows[i].relationid) {
             case 1:
               relations.father.id = rows[i].person2id;
               relations.father.name = rows[i].person2;
@@ -194,22 +193,21 @@ app.get('/addrelations/:id', (req, res) => {
               relations.wife.name = rows[i].person2;
               break;
             case 5:
-              relations.sons.push({id:rows[i].person2id, name:rows[i].person2})
+              relations.sons.push({ id: rows[i].person2id, name: rows[i].person2 })
               break;
             case 6:
-              relations.daughters.push({id:rows[i].person2id, name:rows[i].person2})
+              relations.daughters.push({ id: rows[i].person2id, name: rows[i].person2 })
               break;
             case 7:
-              relations.brothers.push({id:rows[i].person2id, name:rows[i].person2})
+              relations.brothers.push({ id: rows[i].person2id, name: rows[i].person2 })
               break;
             case 8:
-              relations.sisters.push({id:rows[i].person2id, name:rows[i].person2})
+              relations.sisters.push({ id: rows[i].person2id, name: rows[i].person2 })
               break;
           }
         }
-        console.log(relations);
         const data = {
-          person1id:rows[0].person1id,
+          person1id: rows[0].person1id,
           person1: rows[0].person1,
           gender: rows[0].gender,
           relations: relations
@@ -232,7 +230,7 @@ app.get('/addfather/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male' ORDER BY first||' '||last`;
       db.all(sql, (err, fathers) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -241,13 +239,13 @@ app.get('/addfather/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 1,
-            fathers:fathers
+            fathers: fathers
           };
           res.render('addfather', { data })
         }
@@ -256,22 +254,22 @@ app.get('/addfather/:id', (req, res) => {
   });
 });
 
-app.post('/addfather', (req, res)=>{
-  const {id, name, gender, relationid, father} = req.body;
+app.post('/addfather', (req, res) => {
+  const { id, name, gender, relationid, father } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = father;
   const person1id_2 = father;
   let relationid_2 = '';
-  if(gender === 'male'){
+  if (gender === 'male') {
     relationid_2 = 5;
   } else {
-     relationid_2 = 6;
+    relationid_2 = 6;
   }
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -280,8 +278,8 @@ app.post('/addfather', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -292,12 +290,12 @@ app.post('/addfather', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
-      }
+    }
   });
   console.log({
-    person1id:id,
-    relationid:relationid,
-    person2id:father
+    person1id: id,
+    relationid: relationid,
+    person2id: father
   });
 });
 
@@ -313,7 +311,7 @@ app.get('/addmother/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female' ORDER BY first||' '||last`;
       db.all(sql, (err, mothers) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -322,13 +320,13 @@ app.get('/addmother/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 2,
-            mothers:mothers
+            mothers: mothers
           };
           res.render('addmother', { data })
         }
@@ -337,29 +335,29 @@ app.get('/addmother/:id', (req, res) => {
   });
 });
 
-app.post('/addmother', (req, res)=>{
-  const {id, name, gender, relationid, mother} = req.body;
+app.post('/addmother', (req, res) => {
+  const { id, name, gender, relationid, mother } = req.body;
   console.log({
-    id:id,
-    name:name,
-    gender:gender,
-    relationid:relationid,
-    mother:mother
+    id: id,
+    name: name,
+    gender: gender,
+    relationid: relationid,
+    mother: mother
   })
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = mother;
   const person1id_2 = mother;
   let relationid_2 = '';
-  if(gender === 'male'){
+  if (gender === 'male') {
     relationid_2 = 5;
   } else {
-     relationid_2 = 6;
+    relationid_2 = 6;
   }
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -368,8 +366,8 @@ app.post('/addmother', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -380,12 +378,12 @@ app.post('/addmother', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
-      }
+    }
   });
   console.log({
-    person1id:id,
-    relationid:relationid,
-    person2id:mother
+    person1id: id,
+    relationid: relationid,
+    person2id: mother
   });
 });
 
@@ -401,7 +399,7 @@ app.get('/addwife/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female' ORDER BY first||' '||last`;
       db.all(sql, (err, wives) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -410,13 +408,13 @@ app.get('/addwife/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 4,
-            wives:wives
+            wives: wives
           };
           res.render('addwife', { data })
         }
@@ -425,8 +423,8 @@ app.get('/addwife/:id', (req, res) => {
   });
 });
 
-app.post('/addwife', (req, res)=>{
-  const {id, name, gender, relationid, wife} = req.body;
+app.post('/addwife', (req, res) => {
+  const { id, name, gender, relationid, wife } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = wife;
@@ -435,8 +433,8 @@ app.post('/addwife', (req, res)=>{
   relationid_2 = 3;
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -445,8 +443,8 @@ app.post('/addwife', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -457,7 +455,7 @@ app.post('/addwife', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
-      }
+    }
   });
 });
 
@@ -473,7 +471,7 @@ app.get('/addhusband/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male' ORDER BY first||' '||last`;
       db.all(sql, (err, husbands) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -482,13 +480,13 @@ app.get('/addhusband/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 3,
-            husbands:husbands
+            husbands: husbands
           };
           res.render('addhusband', { data })
         }
@@ -497,8 +495,8 @@ app.get('/addhusband/:id', (req, res) => {
   });
 });
 
-app.post('/addhusband', (req, res)=>{
-  const {id, name, gender, relationid, husband} = req.body;
+app.post('/addhusband', (req, res) => {
+  const { id, name, gender, relationid, husband } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = husband;
@@ -507,8 +505,8 @@ app.post('/addhusband', (req, res)=>{
   relationid_2 = 4;
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -517,8 +515,8 @@ app.post('/addhusband', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -529,7 +527,7 @@ app.post('/addhusband', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
-      }
+    }
   });
 });
 
@@ -545,7 +543,7 @@ app.get('/addson/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male' ORDER BY first||' '||last`;
       db.all(sql, (err, sons) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -554,13 +552,13 @@ app.get('/addson/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 5,
-            sons:sons
+            sons: sons
           };
           res.render('addson', { data })
         }
@@ -569,22 +567,22 @@ app.get('/addson/:id', (req, res) => {
   });
 });
 
-app.post('/addson', (req, res)=>{
-  const {id, name, gender, relationid, son} = req.body;
+app.post('/addson', (req, res) => {
+  const { id, name, gender, relationid, son } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = son;
   const person1id_2 = son;
   let relationid_2 = '';
-  if(gender === 'male'){
+  if (gender === 'male') {
     relationid_2 = 1;
   } else {
-     relationid_2 = 2;
+    relationid_2 = 2;
   }
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -593,8 +591,8 @@ app.post('/addson', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -605,7 +603,7 @@ app.post('/addson', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
-      }
+    }
   });
 });
 
@@ -621,7 +619,7 @@ app.get('/adddaughter/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female' ORDER BY first||' '||last`;
       db.all(sql, (err, daughters) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -630,13 +628,13 @@ app.get('/adddaughter/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 6,
-            daughters:daughters
+            daughters: daughters
           };
           res.render('adddaughter', { data })
         }
@@ -645,22 +643,22 @@ app.get('/adddaughter/:id', (req, res) => {
   });
 });
 
-app.post('/adddaughter', (req, res)=>{
-  const {id, name, gender, relationid, daughter} = req.body;
+app.post('/adddaughter', (req, res) => {
+  const { id, name, gender, relationid, daughter } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = daughter;
   const person1id_2 = daughter;
   let relationid_2 = '';
-  if(gender === 'male'){
+  if (gender === 'male') {
     relationid_2 = 1;
   } else {
-     relationid_2 = 2;
+    relationid_2 = 2;
   }
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -669,8 +667,8 @@ app.post('/adddaughter', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -681,7 +679,7 @@ app.post('/adddaughter', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
-      }
+    }
   });
 });
 
@@ -697,7 +695,7 @@ app.get('/addbrother/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'male' ORDER BY first||' '||last`;
       db.all(sql, (err, brothers) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -706,13 +704,13 @@ app.get('/addbrother/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 7,
-            brothers:brothers
+            brothers: brothers
           };
           res.render('addbrother', { data })
         }
@@ -721,22 +719,22 @@ app.get('/addbrother/:id', (req, res) => {
   });
 });
 
-app.post('/addbrother', (req, res)=>{
-  const {id, name, gender, relationid, brother} = req.body;
+app.post('/addbrother', (req, res) => {
+  const { id, name, gender, relationid, brother } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = brother;
   const person1id_2 = brother;
   let relationid_2 = '';
-  if(gender === 'male'){
+  if (gender === 'male') {
     relationid_2 = 7;
   } else {
-     relationid_2 = 8;
+    relationid_2 = 8;
   }
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -745,8 +743,8 @@ app.post('/addbrother', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -757,7 +755,7 @@ app.post('/addbrother', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
-      }
+    }
   });
 });
 
@@ -773,7 +771,7 @@ app.get('/addsister/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female'`;
+      sql = `SELECT id, first||' '||last name FROM persons WHERE gender = 'female' ORDER BY first||' '||last`;
       db.all(sql, (err, sisters) => {
         if (err) {
           console.log(`Error reading database: ${err.message}`);
@@ -782,13 +780,13 @@ app.get('/addsister/:id', (req, res) => {
             details: err.message
           }
           res.render('errorpage', { error });
-        } else{
+        } else {
           const data = {
             id: id,
             person: persons[0].name,
             gender: persons[0].gender,
             relationid: 8,
-            sisters:sisters
+            sisters: sisters
           };
           res.render('addsister', { data })
         }
@@ -797,22 +795,22 @@ app.get('/addsister/:id', (req, res) => {
   });
 });
 
-app.post('/addsister', (req, res)=>{
-  const {id, name, gender, relationid, sister} = req.body;
+app.post('/addsister', (req, res) => {
+  const { id, name, gender, relationid, sister } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = sister;
   const person1id_2 = sister;
   let relationid_2 = '';
-  if(gender === 'male'){
+  if (gender === 'male') {
     relationid_2 = 7;
   } else {
-     relationid_2 = 8;
+    relationid_2 = 8;
   }
   const person2id_2 = id;
   let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-  db.run(sql, [person1id_1, relationid_1, person2id_1], (err)=>{
-    if(err){
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
       console.log(`Error writing database: ${err.message}`);
       const error = {
         type: "Error writing to relationships table",
@@ -821,8 +819,8 @@ app.post('/addsister', (req, res)=>{
       res.render('errorpage', { error });
     } else {
       sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-      db.run(sql, [person1id_2, relationid_2, person2id_2], (err)=>{
-        if(err){
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
           console.log(`Error writing database: ${err.message}`);
           const error = {
             type: "Error writing to relationships table",
@@ -833,7 +831,301 @@ app.post('/addsister', (req, res)=>{
           res.redirect(`/addrelations/${id}`);
         }
       });
+    }
+  });
+});
+
+app.get('/removefather/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 1 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
       }
+      res.render('errorpage', { error });
+    } else {
+      if (gender === 'male') {
+        relationid = 5
+      } else {
+        relationid = 6
+      }
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = ? and person2id = ?)`;
+      db.run(sql, [person2id, relationid, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
+  });
+});
+
+app.get('/removemother/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 2 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      if (gender === 'male') {
+        relationid = 5
+      } else {
+        relationid = 6
+      }
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = ? and person2id = ?)`;
+      db.run(sql, [person2id, relationid, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
+  });
+});
+
+app.get('/removewife/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 4 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 3 and person2id = ?)`;
+      db.run(sql, [person2id, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
+  });
+});
+
+app.get('/removehusband/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 3 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 4 and person2id = ?)`;
+      db.run(sql, [person2id, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
+  });
+});
+
+app.get('/removeson/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 5 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      if (gender === 'male') {
+        relationid = 1
+      } else {
+        relationid = 2
+      }
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = ? and person2id = ?)`;
+      db.run(sql, [person2id, relationid, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
+  });
+});
+
+app.get('/removedaughter/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 6 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      if (gender === 'male') {
+        relationid = 1
+      } else {
+        relationid = 2
+      }
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = ? and person2id = ?)`;
+      db.run(sql, [person2id, relationid, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
+  });
+});
+
+app.get('/removebrother/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 7 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      if (gender === 'male') {
+        relationid = 7
+      } else {
+        relationid = 8
+      }
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = ? and person2id = ?)`;
+      db.run(sql, [person2id, relationid, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
+  });
+});
+
+app.get('/removesister/:person1id/:gender/:person2id', (req, res) => {
+  const person1id = parseInt(req.params.person1id, 10);
+  const gender = req.params.gender;
+  const person2id = parseInt(req.params.person2id, 10);
+  let relationid = 0;
+  let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = 8 and person2id = ?)`;
+  db.run(sql, [person1id, person2id], (err) => {
+    if (err) {
+      console.log(`Error deleting from relationships: ${err.message}`);
+      const error = {
+        type: "Error deleting from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      if (gender === 'male') {
+        relationid = 7
+      } else {
+        relationid = 8
+      }
+      let sql = `DELETE FROM relationships WHERE (person1id = ? and relationid = ? and person2id = ?)`;
+      db.run(sql, [person2id, relationid, person1id], (err) => {
+        if (err) {
+          console.log(`Error deleting from relationships: ${err.message}`);
+          const error = {
+            type: "Error deleting from relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        }
+        else {
+          res.redirect(`/addrelations/${person1id}`);
+        }
+      });
+    }
   });
 });
 

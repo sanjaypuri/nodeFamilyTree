@@ -21,12 +21,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <% rows.map((row)=>{ %>
+            <% rows.map((row)=>{ %>
+              <tr>
                 <td><%= row.relation %></td>
                 <td><%= row.person2 %></td>
+              </tr>
               <% }) %>
-            </tr>
           </tbody>
         </table>
       </div>
