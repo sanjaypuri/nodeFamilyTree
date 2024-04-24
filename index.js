@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./database');
+const { render } = require('ejs');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -1127,6 +1128,10 @@ app.get('/removesister/:person1id/:gender/:person2id', (req, res) => {
       });
     }
   });
+});
+
+app.get('/editperson/:id', (req, res)=>{
+  
 });
 
 app.listen(port, () => {
