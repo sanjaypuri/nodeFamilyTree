@@ -1131,7 +1131,50 @@ app.get('/removesister/:person1id/:gender/:person2id', (req, res) => {
 });
 
 app.get('/editperson/:id', (req, res)=>{
-  
+  const sql = `SELECT * FROM persons WHERE id = ?`;
+  db.get(sql, req.params.id, (err, person)=>{
+    if(err){
+      console.log(`Error reading from persons: ${err.message}`);
+      const error = {
+        type: "Error reading from persons table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      res.render('editperson', { person });
+    }
+  });
+});
+
+app.post('/editperson', (req, res)=>{
+  const id = parseInt(req.body.id);
+  const first = req.body.first;
+  const last = req.body.last;
+  const gender = req.body.gender;
+  const dob = req.body.dob;
+  let dod = req.body.dod;
+  console.log(dod);
+  let is_alive = null;
+  if (req.body.isalive === '') {
+    is_alive = 'yes';
+    dod = '';
+  } else {
+    is_alive = 'no';
+  };
+  console.log(dod);
+  const sql = `UPDATE persons SET first = ?, last = ?, gender = ?, dob = ?, isalive = ?, dod = ? WHERE id = ?`;
+  db.run(sql, [first, last, gender, dob, is_alive, dod,  id], (err)=>{
+    if(err){
+      console.log(`Error writing to persons: ${err.message}`);
+      const error = {
+        type: "Error writing to persons table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      res.redirect(`/`);
+    }
+  });
 });
 
 app.listen(port, () => {
