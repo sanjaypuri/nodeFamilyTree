@@ -11,7 +11,14 @@ app.set('view engine', 'ejs');
 const port = 5000;
 
 app.get("/", (req, res) => {
-  const sql = `SELECT id,	first||' '||last name, gender||iif(length(dob)>2, ' (born:'||strftime('%d-%m-%Y', dob)||iif(length(dod)>2, ', died:'||strftime('%d-%m-%Y', dod)||dod||')', ')'), '') details FROM persons ORDER BY first||last`;
+  const sql = `SELECT
+	                id,
+	                first||' '||last name,
+	                gender,
+	                dob born,
+	                iif(isalive = 'yes', "Alive", "Died"||iif(length(dod)>2, ' on '||dod, '')) status
+                FROM persons ORDER BY first||last`;
+  // const sql = `SELECT id,	first||' '||last name, gender||iif(length(dob)>2, ' (born:'||strftime('%d-%m-%Y', dob)||iif(length(dod)>2, ', died:'||strftime('%d-%m-%Y', dod)||dod||')', ')'), '') details FROM persons ORDER BY first||last`;
   db.all(sql, (err, rows) => {
     if (err) {
       console.log(`Error reading from relationships table: ${err.message}`);
@@ -100,7 +107,14 @@ app.get('/showperson/:id', (req, res) => {
 });
 
 app.get('/listrelations', (req, res) => {
-  const sql = `SELECT id,	first||' '||last name, gender||iif(length(dob)>2, ' (born:'||strftime('%d-%m-%Y', dob)||iif(length(dod)>2, ', died:'||strftime('%d-%m-%Y', dod)||dod||')', ')'), '') details FROM persons ORDER BY first||last`;
+  const sql = `SELECT
+	                id,
+	                first||' '||last name,
+	                gender,
+	                dob born,
+	                iif(isalive = 'yes', "Alive", "Died"||iif(length(dod)>2, ' on '||dod, '')) status
+                FROM persons ORDER BY first||last`;
+  // const sql = `SELECT id,	first||' '||last name, gender||iif(length(dob)>2, ' (born:'||strftime('%d-%m-%Y', dob)||iif(length(dod)>2, ', died:'||strftime('%d-%m-%Y', dod)||dod||')', ')'), '') details FROM persons ORDER BY first||last`;
   db.all(sql, (err, rows) => {
     if (err) {
       console.log(`Error reading from relationships table: ${err.message}`);

@@ -18,8 +18,10 @@
         <table class="table table-dark table-striped" id="personsTable">
           <thead>
             <tr class="header">
-              <th style="width:40%">Name</th>
-              <th style="width:40%">Details</th>
+              <th style="width:30%">Name</th>
+              <th style="width:10%">Gender</th>
+              <th style="width:20%">Born</th>
+              <th style="width:20%">Status</th>
               <th style="width:20%">Action</th>
             </tr>
           </thead>
@@ -30,7 +32,13 @@
                   <%= row.name%>
                 </th>
                 <td>
-                  <%= row.details%>
+                  <%= row.gender%>
+                </td>
+                <td>
+                  <%= row.born%>
+                </td>
+                <td>
+                  <%= row.status%>
                 </td>
                 <td>
                     <a href="/showperson/<%= row.id%>"><button type="button" class="btn btn-sm btn-secondary">Show</button></a>
