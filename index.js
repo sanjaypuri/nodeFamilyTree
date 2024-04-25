@@ -60,6 +60,7 @@ app.post('/addperson', (req, res) => {
         dod_ = '';
       } else {
         is_alive = 'no';
+        dod_ = dod;
       };
       const sql = `INSERT INTO persons (first, last, gender, dob, isalive, dod) VALUES (?, ?, ?, ?, ?, ?)`;
       db.run(sql, [first, last, gender, dob, is_alive, dod_], (err) => {
@@ -80,6 +81,7 @@ app.post('/addperson', (req, res) => {
 });
 
 app.get('/showperson/:id', (req, res) => {
+  const id = req.params.id;
   const sql = `SELECT 
                 rs.person1id, 
                 p1.first||' '||p1.last person1, 
@@ -101,7 +103,8 @@ app.get('/showperson/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      res.render('showperson', { rows });
+      const data = {id, rows}
+      res.render('showperson', { data });
     }
   });
 });
@@ -439,7 +442,7 @@ app.get('/addwife/:id', (req, res) => {
 });
 
 app.post('/addwife', (req, res) => {
-  const { id, name, gender, relationid, wife } = req.body;
+  const { id, name, gender, relationid, wife, dom } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = wife;
@@ -467,7 +470,19 @@ app.post('/addwife', (req, res) => {
           }
           res.render('errorpage', { error });
         } else {
-          res.redirect(`/addrelations/${id}`);
+          let sql = `UPDATE persons SET dom = ? WHERE id IN (?, ?)`;
+          db.run(sql, [dom, person1id_1, person2id_1], (err) => {
+            if (err) {
+              console.log(`Error writing database: ${err.message}`);
+              const error = {
+                type: "Error writing to persons table",
+                details: err.message
+              }
+              res.render('errorpage', { error });
+            } else {
+              res.redirect(`/addrelations/${id}`);
+            }
+          });
         }
       });
     }
@@ -511,7 +526,7 @@ app.get('/addhusband/:id', (req, res) => {
 });
 
 app.post('/addhusband', (req, res) => {
-  const { id, name, gender, relationid, husband } = req.body;
+  const { id, name, gender, relationid, husband, dom } = req.body;
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = husband;
@@ -539,7 +554,19 @@ app.post('/addhusband', (req, res) => {
           }
           res.render('errorpage', { error });
         } else {
-          res.redirect(`/addrelations/${id}`);
+          let sql = `UPDATE persons SET dom = ? WHERE id IN (?, ?)`;
+          db.run(sql, [dom, person1id_1, person2id_1], (err) => {
+            if (err) {
+              console.log(`Error writing database: ${err.message}`);
+              const error = {
+                type: "Error writing to persons table",
+                details: err.message
+              }
+              res.render('errorpage', { error });
+            } else {
+              res.redirect(`/addrelations/${id}`);
+            }
+          });
         }
       });
     }
@@ -1144,10 +1171,10 @@ app.get('/removesister/:person1id/:gender/:person2id', (req, res) => {
   });
 });
 
-app.get('/editperson/:id', (req, res)=>{
+app.get('/editperson/:id', (req, res) => {
   const sql = `SELECT * FROM persons WHERE id = ?`;
-  db.get(sql, req.params.id, (err, person)=>{
-    if(err){
+  db.get(sql, req.params.id, (err, person) => {
+    if (err) {
       console.log(`Error reading from persons: ${err.message}`);
       const error = {
         type: "Error reading from persons table",
@@ -1160,7 +1187,7 @@ app.get('/editperson/:id', (req, res)=>{
   });
 });
 
-app.post('/editperson', (req, res)=>{
+app.post('/editperson', (req, res) => {
   const id = parseInt(req.body.id);
   const first = req.body.first;
   const last = req.body.last;
@@ -1177,8 +1204,8 @@ app.post('/editperson', (req, res)=>{
   };
   console.log(dod);
   const sql = `UPDATE persons SET first = ?, last = ?, gender = ?, dob = ?, isalive = ?, dod = ? WHERE id = ?`;
-  db.run(sql, [first, last, gender, dob, is_alive, dod,  id], (err)=>{
-    if(err){
+  db.run(sql, [first, last, gender, dob, is_alive, dod, id], (err) => {
+    if (err) {
       console.log(`Error writing to persons: ${err.message}`);
       const error = {
         type: "Error writing to persons table",

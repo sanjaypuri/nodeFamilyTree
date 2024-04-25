@@ -8,10 +8,13 @@
   </head>
   <body class="bg-dark">
     <%- include('navbar') %> 
-    <% if(rows.length < 1) { %>
+    <% if(data.rows.length < 1) { %>
       <h2 class="text-center text-light mt-4">No relationships available. Please add relationships first</h2>
-    <% } else { %>
-      <h1 class="text-light text-center my-3">Family Tree for <%= rows[0].person1 %></h1>
+      <div class="container text-center">
+        <a href="/addrelations/<%= data.id %>"><button class="btn btn-secondary">Add Relations</button></a>
+      </div>
+      <% } else { %>
+      <h1 class="text-light text-center my-3">Family Tree for <%= data.rows[0].person1 %></h1>
       <div class="container w-50">
         <table class="table table-dark table-sttriped">
           <thead>
@@ -21,7 +24,7 @@
             </tr>
           </thead>
           <tbody>
-            <% rows.map((row)=>{ %>
+            <% data.rows.map((row)=>{ %>
               <tr>
                 <td><%= row.relation %></td>
                 <td><%= row.person2 %></td>
@@ -29,7 +32,7 @@
               <% }) %>
           </tbody>
         </table>
-        <a href="/addrelations/<%= rows[0].person1id %>"><button class="btn btn-secondary">Modify Relations</button></a>
+        <a href="/addrelations/<%= data.rows[0].person1id %>"><button class="btn btn-secondary">Modify Relations</button></a>
       </div>
     <% } %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
