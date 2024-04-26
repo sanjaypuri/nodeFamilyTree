@@ -72,7 +72,6 @@ app.post('/addperson', (req, res) => {
           }
           res.render('errorpage', { error });
         } else {
-          console.log("Record inserted in persons table");
           res.redirect('/');
         }
       });
@@ -310,11 +309,6 @@ app.post('/addfather', (req, res) => {
       });
     }
   });
-  console.log({
-    person1id: id,
-    relationid: relationid,
-    person2id: father
-  });
 });
 
 app.get('/addmother/:id', (req, res) => {
@@ -355,13 +349,6 @@ app.get('/addmother/:id', (req, res) => {
 
 app.post('/addmother', (req, res) => {
   const { id, name, gender, relationid, mother } = req.body;
-  console.log({
-    id: id,
-    name: name,
-    gender: gender,
-    relationid: relationid,
-    mother: mother
-  })
   const person1id_1 = id;
   const relationid_1 = relationid;
   const person2id_1 = mother;
@@ -397,11 +384,6 @@ app.post('/addmother', (req, res) => {
         }
       });
     }
-  });
-  console.log({
-    person1id: id,
-    relationid: relationid,
-    person2id: mother
   });
 });
 
@@ -1194,7 +1176,6 @@ app.post('/editperson', (req, res) => {
   const gender = req.body.gender;
   const dob = req.body.dob;
   let dod = req.body.dod;
-  console.log(dod);
   let is_alive = null;
   if (req.body.isalive === '') {
     is_alive = 'yes';
@@ -1202,7 +1183,6 @@ app.post('/editperson', (req, res) => {
   } else {
     is_alive = 'no';
   };
-  console.log(dod);
   const sql = `UPDATE persons SET first = ?, last = ?, gender = ?, dob = ?, isalive = ?, dod = ? WHERE id = ?`;
   db.run(sql, [first, last, gender, dob, is_alive, dod, id], (err) => {
     if (err) {
