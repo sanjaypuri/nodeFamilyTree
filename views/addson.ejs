@@ -35,7 +35,7 @@
           <div class="mb-3">
             <label for="son" class="form-label text-light">Son</label>
             <select class="form-select" aria-label="Default select example" id="son" name="son">
-              <option selected>Select</option>
+              <option value="0" selected>Select</option>
               <% data.sons.map((son)=>{ %>
                 <option value="<%= son.id %>"><%= son.name %></option>
               <% }) %>
