@@ -18,7 +18,6 @@ app.get("/", (req, res) => {
 	                dob born,
 	                iif(isalive = 'yes', "Alive", "Died"||iif(length(dod)>2, ' on '||dod, '')) status
                 FROM persons ORDER BY first||last`;
-  // const sql = `SELECT id,	first||' '||last name, gender||iif(length(dob)>2, ' (born:'||strftime('%d-%m-%Y', dob)||iif(length(dod)>2, ', died:'||strftime('%d-%m-%Y', dod)||dod||')', ')'), '') details FROM persons ORDER BY first||last`;
   db.all(sql, (err, rows) => {
     if (err) {
       console.log(`Error reading from relationships table: ${err.message}`);
@@ -102,7 +101,7 @@ app.get('/showperson/:id', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      const data = {id, rows}
+      const data = { id, rows }
       res.render('showperson', { data });
     }
   });
@@ -1193,6 +1192,42 @@ app.post('/editperson', (req, res) => {
       res.render('errorpage', { error });
     } else {
       res.redirect(`/`);
+    }
+  });
+});
+
+app.get('/deleteperson/:id', (req, res) => {
+  let sql = `SELECT * FROM relationships WHERE person1id = ?`;
+  db.all(sql, req.params.id, (err, rows) => {
+    if (err) {
+      console.log(`Error reading from relationships: ${err.message}`);
+      const error = {
+        type: "Error reading from relationships table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      if (rows.length > 0) {
+        const error = {
+          type: "Cannot Delete person",
+          details: "Person with active relationships cannot be deleted"
+        }
+        res.render('errorpage', { error });
+  } else {
+        sql = `DELETE FROM persons WHERE id = ?`;
+        db.run(sql, req.params.id, (err) => {
+          if (err) {
+            console.log(`Error deleting person: ${err.message}`);
+            const error = {
+              type: "Error deleting from persons table",
+              details: err.message
+            }
+            res.render('errorpage', { error });
+          } else {
+            res.redirect('/');
+          }
+        });
+      }
     }
   });
 });
