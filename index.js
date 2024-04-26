@@ -116,7 +116,6 @@ app.get('/listrelations', (req, res) => {
 	                dob born,
 	                iif(isalive = 'yes', "Alive", "Died"||iif(length(dod)>2, ' on '||dod, '')) status
                 FROM persons ORDER BY first||last`;
-  // const sql = `SELECT id,	first||' '||last name, gender||iif(length(dob)>2, ' (born:'||strftime('%d-%m-%Y', dob)||iif(length(dod)>2, ', died:'||strftime('%d-%m-%Y', dod)||dod||')', ')'), '') details FROM persons ORDER BY first||last`;
   db.all(sql, (err, rows) => {
     if (err) {
       console.log(`Error reading from relationships table: ${err.message}`);
