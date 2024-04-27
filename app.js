@@ -1265,6 +1265,72 @@ app.get('/deleteperson/:id', (req, res) => {
   });
 });
 
+app.get('/birthdays', (req, res)=>{
+  const sql = `SELECT
+	                first||' '||last name,
+	                gender,
+	                dob,
+	                IIF(LENGTH(dod)>2, "Died at "||(DATE(dod)-DATE(dob)), DATE('now')-DATE(dob)) Age
+                FROM persons
+                WHERE LENGTH(dob)>2
+                ORDER BY SUBSTR(dob, 6, 5)`;
+  db.all(sql, (err, persons)=>{
+    if(err){
+      const error = {
+        type: "Error getting Birthdays from persons table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      res.render('birthdays', {persons});
+    }
+  });
+});
+
+app.get('/marriages', (req, res)=>{
+  const sql = `SELECT
+              	first||' '||last name,
+              	gender,
+              	dom,
+              	IIF(LENGTH(dob)>2, 'At age '||(DATE(dom)-DATE(dob)), '')||IIF(LENGTH(dob)>2, ', '||(DATE('now')-DATE(dom))||' Years ago', '') married
+                FROM persons
+                WHERE LENGTH(dom)>2
+                ORDER BY SUBSTR(dom, 6, 5)`;
+  db.all(sql, (err, persons)=>{
+    if(err){
+      const error = {
+        type: "Error getting Marriages from persons table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      res.render('marriages', {persons});
+    }
+  });
+});
+
+app.get('/deaths', (req, res)=>{
+  const sql = `SELECT
+              	first||' '||last name,
+              	gender,
+              	dod,
+              (DATE('now')-DATE(dod))||' Years ago'||IIF(LENGTH(dob)>2, ', At Age '||(DATE(dod)-DATE(dob)), '') details
+              FROM persons
+              WHERE LENGTH(dod)>2
+              ORDER BY SUBSTR(dod, 6, 5)`;
+  db.all(sql, (err, persons)=>{
+    if(err){
+      const error = {
+        type: "Error getting Death details from persons table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      res.render('deaths', {persons});
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at port ${PORT}`);
 });
