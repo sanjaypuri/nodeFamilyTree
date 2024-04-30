@@ -272,9 +272,6 @@ app.get('/addfather/:id', (req, res) => {
 
 app.post('/addfather', (req, res) => {
   const { id, name, gender, relationid, father } = req.body;
-  if(father == 0){
-    res.redirect(`/addfather/${id}`)
-  } else{
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = father;
@@ -311,7 +308,6 @@ app.post('/addfather', (req, res) => {
         });
       }
     });
-    }
 });
 
 app.get('/addmother/:id', (req, res) => {
@@ -352,9 +348,6 @@ app.get('/addmother/:id', (req, res) => {
 
 app.post('/addmother', (req, res) => {
   const { id, name, gender, relationid, mother } = req.body;
-  if(mother == 0){
-    res.redirect(`/addmother/${id}`)
-  } else{
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = mother;
@@ -391,7 +384,6 @@ app.post('/addmother', (req, res) => {
         });
       }
     });
-    }
 });
 
 app.get('/addwife/:id', (req, res) => {
@@ -432,54 +424,50 @@ app.get('/addwife/:id', (req, res) => {
 
 app.post('/addwife', (req, res) => {
   const { id, name, gender, relationid, wife, dom } = req.body;
-  if(wife == 0){
-    res.redirect(`/addwife/${id}`)
-  } else{
-    const person1id_1 = id;
-    const relationid_1 = relationid;
-    const person2id_1 = wife;
-    const person1id_2 = wife;
-    let relationid_2 = '';
-    relationid_2 = 3;
-    const person2id_2 = id;
-    let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-    db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
-      if (err) {
-        console.log(`Error writing database: ${err.message}`);
-        const error = {
-          type: "Error writing to relationships table",
-          details: err.message
-        }
-        res.render('errorpage', { error });
-      } else {
-        sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
-        db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
-          if (err) {
-            console.log(`Error writing database: ${err.message}`);
-            const error = {
-              type: "Error writing to relationships table",
-              details: err.message
-            }
-            res.render('errorpage', { error });
-          } else {
-            let sql = `UPDATE persons SET dom = ? WHERE id IN (?, ?)`;
-            db.run(sql, [dom, person1id_1, person2id_1], (err) => {
-              if (err) {
-                console.log(`Error writing database: ${err.message}`);
-                const error = {
-                  type: "Error writing to persons table",
-                  details: err.message
-                }
-                res.render('errorpage', { error });
-              } else {
-                res.redirect(`/addrelations/${id}`);
-              }
-            });
-          }
-        });
+  const person1id_1 = id;
+  const relationid_1 = relationid;
+  const person2id_1 = wife;
+  const person1id_2 = wife;
+  let relationid_2 = '';
+  relationid_2 = 3;
+  const person2id_2 = id;
+  let sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
+  db.run(sql, [person1id_1, relationid_1, person2id_1], (err) => {
+    if (err) {
+      console.log(`Error writing database: ${err.message}`);
+      const error = {
+        type: "Error writing to relationships table",
+        details: err.message
       }
-    });
+      res.render('errorpage', { error });
+    } else {
+      sql = `INSERT INTO relationships (person1id, relationid, person2id) values (?, ?, ?)`;
+      db.run(sql, [person1id_2, relationid_2, person2id_2], (err) => {
+        if (err) {
+          console.log(`Error writing database: ${err.message}`);
+          const error = {
+            type: "Error writing to relationships table",
+            details: err.message
+          }
+          res.render('errorpage', { error });
+        } else {
+          let sql = `UPDATE persons SET dom = ? WHERE id IN (?, ?)`;
+          db.run(sql, [dom, person1id_1, person2id_1], (err) => {
+            if (err) {
+              console.log(`Error writing database: ${err.message}`);
+              const error = {
+                type: "Error writing to persons table",
+                details: err.message
+              }
+              res.render('errorpage', { error });
+            } else {
+              res.redirect(`/addrelations/${id}`);
+            }
+          });
+        }
+      });
     }
+  });
 });
 
 app.get('/addhusband/:id', (req, res) => {
@@ -520,9 +508,6 @@ app.get('/addhusband/:id', (req, res) => {
 
 app.post('/addhusband', (req, res) => {
   const { id, name, gender, relationid, husband, dom } = req.body;
-  if(husband == 0){
-    res.redirect(`/addhusband/${id}`)
-  } else{
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = husband;
@@ -567,7 +552,6 @@ app.post('/addhusband', (req, res) => {
         });
       }
     });
-    }
 });
 
 app.get('/addson/:id', (req, res) => {
@@ -608,9 +592,6 @@ app.get('/addson/:id', (req, res) => {
 
 app.post('/addson', (req, res) => {
   const { id, name, gender, relationid, son } = req.body;
-  if(son == 0){
-    res.redirect(`/addson/${id}`)
-  } else{
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = son;
@@ -647,7 +628,6 @@ app.post('/addson', (req, res) => {
         });
       }
     });
-    }
 });
 
 app.get('/adddaughter/:id', (req, res) => {
@@ -768,9 +748,6 @@ app.get('/addbrother/:id', (req, res) => {
 
 app.post('/addbrother', (req, res) => {
   const { id, name, gender, relationid, brother } = req.body;
-  if(brother == 0){
-    res.redirect(`/addbrother/${id}`)
-  } else{
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = brother;
@@ -807,7 +784,6 @@ app.post('/addbrother', (req, res) => {
         });
       }
     });
-    }
 });
 
 app.get('/addsister/:id', (req, res) => {
@@ -848,9 +824,6 @@ app.get('/addsister/:id', (req, res) => {
 
 app.post('/addsister', (req, res) => {
   const { id, name, gender, relationid, sister } = req.body;
-  if(sister == 0){
-    res.redirect(`/addsister/${id}`)
-  } else{
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = sister;
@@ -887,7 +860,6 @@ app.post('/addsister', (req, res) => {
         });
       }
     });
-    }
 });
 
 app.get('/removefather/:person1id/:gender/:person2id', (req, res) => {
