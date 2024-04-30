@@ -26,27 +26,36 @@
             </tr>
           </thead>
           <tbody>
-            <% rows.map((row)=>{ %>
+            <% if(isError) { %>
               <tr>
-                <th>
-                  <%= row.name%>
-                </th>
-                <td>
-                  <%= row.gender%>
-                </td>
-                <td>
-                  <%= row.born%>
-                </td>
-                <td>
-                  <%= row.status%>
-                </td>
-                <td>
-                    <a href="/showperson/<%= row.id%>"><button type="button" class="btn btn-sm btn-secondary">Show</button></a>
-                    <a href="/editperson/<%= row.id%>"><button type="button" class="btn btn-sm btn-secondary">Edit</button></a>
-                    <a href="/deleteperson/<%= row.id%>"><button type="button" class="btn btn-sm btn-secondary">Delete</button></a>
+                <td colspan="5">
+                  <p><%= error.type %></p>
+                  <p><%= error.details %></p>
                 </td>
               </tr>
-              <% }) %>
+            <% } else { %>
+              <% rows.map((row)=>{ %>
+                <tr>
+                  <th>
+                    <%= row.name%>
+                  </th>
+                  <td>
+                    <%= row.gender%>
+                  </td>
+                  <td>
+                    <%= row.born%>
+                  </td>
+                  <td>
+                    <%= row.status%>
+                  </td>
+                  <td>
+                      <a href="/showperson/<%= row.id%>"><button type="button" class="btn btn-sm btn-secondary">Show</button></a>
+                      <a href="/editperson/<%= row.id%>"><button type="button" class="btn btn-sm btn-secondary">Edit</button></a>
+                      <a href="/deleteperson/<%= row.id%>"><button type="button" class="btn btn-sm btn-secondary">Delete</button></a>
+                  </td>
+                </tr>
+                <% }) %>
+              <% } %>
           </tbody>
         </table>
       </div>

@@ -21,21 +21,23 @@ app.get("/", (req, res) => {
                 FROM persons ORDER BY first||last`;
   db.all(sql, (err, rows) => {
     if (err) {
-      console.log(`Error reading from relationships table: ${err.message}`);
       const error = {
         type: "Error reading relationship table",
         details: err.message
       }
-      res.render('errorpage', { error });
+      const isError = 1;
+      res.render('home', { isError, error });
     } else {
       if (rows.length === 0) {
         const error = {
           type: "No Data Available",
           details: "Please enter persons first"
         }
-        res.render('errorpage', { error });
-      } else {
-        res.render('home', { rows });
+          const isError = 1;
+          res.render('home', { isError, error });
+        } else {
+        const isError = 0;
+        res.render('home', { isError, rows });
       };
     }
   })
@@ -49,34 +51,26 @@ app.post('/addperson', (req, res) => {
   const { first, last, gender, dob, isalive, dod } = req.body;
   let is_alive = "";
   let dod_ = ""
-  if (!first || first === '') {
-    res.redirect('/addperson');
+  if (isalive === '') {
+    is_alive = 'yes';
+    dod_ = '';
   } else {
-    if (gender === 'Select Gender') {
-      res.redirect('/addperson');
-    } else {
-      if (isalive === '') {
-        is_alive = 'yes';
-        dod_ = '';
-      } else {
-        is_alive = 'no';
-        dod_ = dod;
-      };
-      const sql = `INSERT INTO persons (first, last, gender, dob, isalive, dod) VALUES (?, ?, ?, ?, ?, ?)`;
-      db.run(sql, [first, last, gender, dob, is_alive, dod_], (err) => {
-        if (err) {
-          console.log(`Error writing database: ${err.message}`);
-          const error = {
-            type: "Error writing to persons table",
-            details: err.message
-          }
-          res.render('errorpage', { error });
-        } else {
-          res.redirect('/');
-        }
-      });
-    };
+    is_alive = 'no';
+    dod_ = dod;
   };
+  const sql = `INSERT INTO persons (first, last, gender, dob, isalive, dod) VALUES (?, ?, ?, ?, ?, ?)`;
+  db.run(sql, [first, last, gender, dob, is_alive, dod_], (err) => {
+    if (err) {
+      console.log(`Error writing database: ${err.message}`);
+      const error = {
+        type: "Error writing to persons table",
+        details: err.message
+      }
+      res.render('errorpage', { error });
+    } else {
+      res.redirect('/');
+    }
+  });
 });
 
 app.get('/showperson/:id', (req, res) => {
@@ -95,15 +89,16 @@ app.get('/showperson/:id', (req, res) => {
                 ORDER BY rs.relationid`;
   db.all(sql, req.params.id, (err, rows) => {
     if (err) {
-      console.log(`Error reading database: ${err.message}`);
+      const isError = 1;
       const error = {
         type: "Error reading from relationshps table",
         details: err.message
       }
-      res.render('errorpage', { error });
+      res.render('showperson', { isError, error });
     } else {
-      const data = { id, rows }
-      res.render('showperson', { data });
+      const isError = 0;
+      const data = { id, rows };
+      res.render('showperson', { isError, data });
     }
   });
 });
@@ -860,7 +855,7 @@ app.post('/addsister', (req, res) => {
         });
       }
     });
-});
+  });
 
 app.get('/removefather/:person1id/:gender/:person2id', (req, res) => {
   const person1id = parseInt(req.params.person1id, 10);
