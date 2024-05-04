@@ -1259,7 +1259,7 @@ app.get('/marriages', (req, res)=>{
               	first||' '||last name,
               	gender,
               	dom,
-              	IIF(LENGTH(dob)>2, 'At age '||(DATE(dom)-DATE(dob)), '')||IIF(LENGTH(dob)>2, ', '||(DATE('now')-DATE(dom))||' Years ago', '') married
+              	IIF(LENGTH(dob)>2, 'At age '||(DATE(dom)-DATE(dob)), '')||IIF(LENGTH(dob)>2, ', ', '')||(DATE('now')-DATE(dom))||' Years ago' married
                 FROM persons
                 WHERE LENGTH(dom)>2
                 ORDER BY SUBSTR(dom, 6, 5)`;
