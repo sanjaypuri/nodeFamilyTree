@@ -9,15 +9,19 @@
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <style>
     .alertDiv {
-      background-color: silver;
       color: black;
       position: absolute;
       top: 10px;
       right: 15px;
+      width:300px;
       padding: 5px;
-      border: 2px solid gray;
+      border-width: 3px;
+      border-style: solid;
+      border-radius: 20px;
       display: none;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
+      text-align: center;
+      display: none;
     }
   </style>
 </head>
@@ -96,6 +100,29 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
       </script>
     <script>
+      const msg = "<%- msg %>"
+      
+      function showAlert(message, border, duration) {
+        const msgBox = document.getElementById('alertDiv');
+        msgBox.innerText = message;
+        msgBox.style.borderBlockColor = border
+        if(border == 'red'){
+          msgBox.style.backgroundColor = 'pink';
+        } else if (border == 'green'){
+          msgBox.style.backgroundColor = '#98ff95'; //'palegreen';
+        } else if (border = 'blue'){
+          msgBox.style.backgroundColor = 'lightcyan';
+        }
+        msgBox.style.display = 'block';
+        setTimeout(function () {
+          msgBox.style.display = 'none';
+        }, 1000*duration);
+      };
+
+      if(msg != 'blank'){
+        showAlert(msg, 'green', 2);
+      }
+
       let errorMessage = '';
       function validForm() {
         const gender = document.getElementById('gender').value;
@@ -107,19 +134,10 @@
         return true;
       };
 
-      function showAlert() {
-        const msgBox = document.getElementById('alertDiv');
-        msgBox.innerText = errorMessage;
-        msgBox.style.display = 'block';
-        setTimeout(function () {
-          msgBox.style.display = 'none';
-        }, 2000);
-      };
-
       document.getElementById("btnSubmit").addEventListener('click', function (event) {
         if (!validForm()) {
           event.preventDefault();
-          showAlert();
+          showAlert(errorMessage, 'red', 2);
         }
       });
     </script>

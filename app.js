@@ -43,8 +43,9 @@ app.get("/", (req, res) => {
   })
 });
 
-app.get('/addperson', (req, res) => {
-  res.render('addperson', {})
+app.get('/addperson/:msg', (req, res) => {
+  const msg = req.params.msg;
+  res.render('addperson', {msg})
 });
 
 app.post('/addperson', (req, res) => {
@@ -68,7 +69,7 @@ app.post('/addperson', (req, res) => {
       }
       res.render('errorpage', { error });
     } else {
-      res.redirect('/');
+      res.redirect(`/addperson/New Person ${first} ${last} Saved`);
     }
   });
 });
@@ -133,7 +134,8 @@ app.get('/listrelations', (req, res) => {
   })
 });
 
-app.get('/addrelations/:id', (req, res) => {
+app.get('/addrelations/:id/:msg', (req, res) => {
+  const msg = req.params.msg;
   const id = req.params.id;
   let relations = {
     father: { id: 0, name: '' },
@@ -182,7 +184,7 @@ app.get('/addrelations/:id', (req, res) => {
             gender: recs[0].gender,
             relations: relations
           };
-          res.render('addrelations', { data });
+          res.render('addrelations', { msg, data });
         });
       } else {
         for (i = 0; i < rows.length; i++) {
@@ -223,13 +225,14 @@ app.get('/addrelations/:id', (req, res) => {
           gender: rows[0].gender,
           relations: relations
         };
-        res.render('addrelations', { data });
+        res.render('addrelations', { msg, data });
       }
     }
   });
 });
 
-app.get('/addfather/:id', (req, res) => {
+app.get('/addfather/:id/:msg', (req, res) => {
+  let msg = req.params.msg;
   const id = req.params.id;
   let sql = "SELECT first||' '||last name, gender FROM persons WHERE id = ?";
   db.all(sql, id, (err, persons) => {
@@ -258,7 +261,8 @@ app.get('/addfather/:id', (req, res) => {
             relationid: 1,
             fathers: fathers
           };
-          res.render('addfather', { data })
+          // msg = req.body.saved;
+          res.render('addfather', { msg, data })
         }
       });
     }
@@ -266,7 +270,7 @@ app.get('/addfather/:id', (req, res) => {
 });
 
 app.post('/addfather', (req, res) => {
-  const { id, name, gender, relationid, father } = req.body;
+  const { saved, id, name, gender, relationid, father } = req.body;
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = father;
@@ -298,7 +302,7 @@ app.post('/addfather', (req, res) => {
             }
             res.render('errorpage', { error });
           } else {
-            res.redirect(`/addrelations/${id}`);
+            res.redirect(`/addrelations/${id}/${saved}`);
           }
         });
       }
@@ -857,7 +861,8 @@ app.post('/addsister', (req, res) => {
     });
   });
 
-app.get('/removefather/:person1id/:gender/:person2id', (req, res) => {
+app.get('/removefather/:person1id/:gender/:person2id/:msg', (req, res) => {
+  const msg = req.params.msg;
   const person1id = parseInt(req.params.person1id, 10);
   const gender = req.params.gender;
   const person2id = parseInt(req.params.person2id, 10);
@@ -888,7 +893,7 @@ app.get('/removefather/:person1id/:gender/:person2id', (req, res) => {
           res.render('errorpage', { error });
         }
         else {
-          res.redirect(`/addrelations/${person1id}`);
+          res.redirect(`/addrelations/${person1id}/${msg}`);
         }
       });
     }
