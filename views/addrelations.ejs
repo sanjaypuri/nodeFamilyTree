@@ -36,7 +36,7 @@
           <td>Father</td>
           <% if(data.relations.father.id===0) { %>
             <td colspan="2">
-              <a href="/addfather/<%= data.person1id %>/blank"><button class="btn btn-sm btn-secondary">Add
+              <a href="/addfather/<%= data.person1id %>"><button class="btn btn-sm btn-secondary">Add
                   Father</button></a>
             </td>
             <% } else { %>
@@ -44,7 +44,7 @@
                 <%= data.relations.father.name %>
               </td>
               <td>
-                <a href="/removefather/<%= data.person1id %>/<%= data.gender %>/<%= data.relations.father.id%>/Father Removed">
+                <a href="/removefather/<%= data.person1id %>/<%= data.gender %>/<%= data.relations.father.id%>">
                   <button class="btn btn-sm btn-secondary">Remove</button>
                 </a>
               </td>

@@ -134,7 +134,7 @@ app.get('/listrelations', (req, res) => {
   })
 });
 
-app.get('/addrelations/:id/:msg', (req, res) => {
+app.get('/addrelations/:id', (req, res) => {
   const msg = req.params.msg;
   const id = req.params.id;
   let relations = {
@@ -231,7 +231,7 @@ app.get('/addrelations/:id/:msg', (req, res) => {
   });
 });
 
-app.get('/addfather/:id/:msg', (req, res) => {
+app.get('/addfather/:id', (req, res) => {
   let msg = req.params.msg;
   const id = req.params.id;
   let sql = "SELECT first||' '||last name, gender FROM persons WHERE id = ?";
@@ -270,7 +270,7 @@ app.get('/addfather/:id/:msg', (req, res) => {
 });
 
 app.post('/addfather', (req, res) => {
-  const { saved, id, name, gender, relationid, father } = req.body;
+  const {id, name, gender, relationid, father } = req.body;
     const person1id_1 = id;
     const relationid_1 = relationid;
     const person2id_1 = father;
@@ -302,7 +302,7 @@ app.post('/addfather', (req, res) => {
             }
             res.render('errorpage', { error });
           } else {
-            res.redirect(`/addrelations/${id}/${saved}`);
+            res.redirect(`/addrelations/${id}`);
           }
         });
       }
@@ -861,8 +861,7 @@ app.post('/addsister', (req, res) => {
     });
   });
 
-app.get('/removefather/:person1id/:gender/:person2id/:msg', (req, res) => {
-  const msg = req.params.msg;
+app.get('/removefather/:person1id/:gender/:person2id', (req, res) => {
   const person1id = parseInt(req.params.person1id, 10);
   const gender = req.params.gender;
   const person2id = parseInt(req.params.person2id, 10);
@@ -893,7 +892,7 @@ app.get('/removefather/:person1id/:gender/:person2id/:msg', (req, res) => {
           res.render('errorpage', { error });
         }
         else {
-          res.redirect(`/addrelations/${person1id}/${msg}`);
+          res.redirect(`/addrelations/${person1id}`);
         }
       });
     }
