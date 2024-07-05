@@ -95,11 +95,11 @@ app.get('/showperson/:id', (req, res) => {
         type: "Error reading from relationshps table",
         details: err.message
       }
-      res.render('showperson', { isError, error });
+      res.render('showperson2', { isError, error });
     } else {
       const isError = 0;
       const data = { id, rows };
-      res.render('showperson', { isError, data });
+      res.render('showperson2', { isError, data });
     }
   });
 });

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Family Tee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+      a:link {
+        text-decoration:none;
+      }
+    </style>
+  </head>
+  <body class="bg-dark">
+    <%- include('navbar') %> 
+    <% if (isError) { %>
+      <div class="container text-center text-light">
+        <p><%= error.type %></p>
+        <p><%= error.details %></p>
+      </div>
+    <% } else { %>
+      <% if(data.rows.length < 1) { %>
+        <h2 class="text-center text-light mt-4">No relationships available. Please add relationships first</h2>
+        <div class="container text-center">
+          <a href="/addrelations/<%= data.id %>"><button class="btn btn-secondary">Add Relations</button></a>
+        </div>
+        <% } else { %>
+          <h1 class="text-light text-center my-3">Family Tree for <%= data.rows[0].person1 %></h1>
+          <div class="row">
+            <div class="col-4 offset-2">
+              <table class="table table-bordered border-secondary">
+                <tr>
+                  <td class="text-light bg-secondary text-end">Father</td>
+                  <% for(i=0; i<data.rows.length; i++) { %>
+                    <% if(data.rows[i].relationid == 1) { %>
+                      <td class="text-light bg-dark">
+                        <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                      </td>
+                    <% } %>
+                  <% } %>
+                </tr>
+              </table>
+            </div>
+            <div class="col-4">
+              <table class="table table-bordered border-secondary">
+                <tr>
+                  <td class="text-light bg-secondary text-end">Mother</td>
+                  <% for(i=0; i<data.rows.length; i++) { %>
+                    <% if(data.rows[i].relationid == 2) { %>
+                      <td class="text-light bg-dark">
+                        <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                      </td>
+                    <% } %>
+                  <% } %>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-4 offset-4">
+              <table class="table table-bordered border-secondary">
+                <tr>
+                  <% for(i=0; i<data.rows.length; i++) { %>
+                    <% if(data.rows[i].relationid == 3) { %>
+                      <td class="text-light bg-secondary text-end">Husband</td>
+                      <td class="text-light bg-dark">
+                        <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                      </td>
+                    <% } else if(data.rows[i].relationid == 4) { %>
+                      <td class="text-light bg-secondary text-end">Wife</td>
+                      <td class="text-light bg-dark">
+                        <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                      </td>
+                    <% } %>
+                  <% } %>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-4 offset-2">
+              <table class="table table-bordered border-secondary">
+                <tr>
+                  <td class="text-light bg-secondary text-center">Son(s)</td>
+                </tr>
+                <% let count = 0 %>
+                <% for(i=0; i<data.rows.length; i++) { %>
+                    <% if(data.rows[i].relationid == 5) { %>
+                      <tr>
+                        <td class="text-light bg-dark">
+                          <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                        </td>
+                        <% count++ %>
+                      </tr>
+                    <% } %>
+                  <% } %>
+                  <% if(count == 0) { %>
+                    <tr>
+                      <td class="text-light bg-dark">-</td>
+                    </tr>
+                  <% } %>
+              </table>
+            </div>
+            <div class="col-4">
+              <table class="table table-bordered border-secondary">
+                <tr>
+                  <td class="text-light bg-secondary text-center">Daughters(s)</td>
+                </tr>
+                  <% count = 0 %>
+                  <% for(i=0; i<data.rows.length; i++) { %>
+                    <% if(data.rows[i].relationid == 6) { %>
+                      <tr>
+                        <td class="text-light bg-dark">
+                          <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                        </td>
+                        <% count++ %>
+                      </tr>
+                    <% } %>
+                  <% } %>
+                  <% if(count == 0) { %>
+                    <tr>
+                      <td class="text-light bg-dark">-</td>
+                    </tr>
+                  <% } %>
+              </table>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-4 offset-2">
+              <table class="table table-bordered border-secondary">
+                <tr>
+                  <td class="text-light bg-secondary text-center">Brothers(s)</td>
+                </tr>
+                <% count = 0 %>
+                <% for(i=0; i<data.rows.length; i++) { %>
+                    <% if(data.rows[i].relationid == 7) { %>
+                      <tr>
+                        <td class="text-light bg-dark">
+                          <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                        </td>
+                        <% count++ %>
+                      </tr>
+                    <% } %>
+                  <% } %>
+                  <% if(count == 0) { %>
+                    <tr>
+                      <td class="text-light bg-dark">-</td>
+                    </tr>
+                  <% } %>
+              </table>
+            </div>
+            <div class="col-4">
+              <table class="table table-bordered border-secondary">
+                <tr>
+                  <td class="text-light bg-secondary text-center">Sisters(s)</td>
+                </tr>
+                  <% count = 0 %>
+                  <% for(i=0; i<data.rows.length; i++) { %>
+                    <% if(data.rows[i].relationid == 8) { %>
+                      <tr>
+                        <td class="text-light bg-dark">
+                          <a href="/showperson/<%= data.rows[i].person2id %>"><%= data.rows[i].person2 %></a>
+                        </td>
+                        <% count++ %>
+                      </tr>
+                    <% } %>
+                  <% } %>
+                  <% if(count == 0) { %>
+                    <tr>
+                      <td class="text-light bg-dark">-</td>
+                    </tr>
+                  <% } %>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2 offset-5 text-center">
+              <a href="/addrelations/<%= data.rows[0].person1id %>  ">
+                <button class="btn btn-secondary">Modify Relations</button>
+              </a>
+            </div>
+          </div>
+      <% } %>
+    <% } %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

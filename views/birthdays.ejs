@@ -34,7 +34,7 @@
                   <%= person.gender%>
                 </td>
                 <td>
-                  <%= person.dob%>
+                  <%= (person.dob).slice(8)+'-'+(person.dob).slice(5,7)+"-"+(person.dob).slice(0,4) %>
                 </td>
                 <td>
                   <%= person.Age%>
